@@ -30,9 +30,9 @@ jobs:
       - uses: terraform-linters/tflint-load-config-action@v1
         name: Setup tflint-config
         with:
-          source-repo: clouddrove-sandbox/Workflow-test-TS
+          source-repo: Tanveer143s/tflint-test
           source-path: .github/config/.tflint.hcl
-          source-ref: tflint2-1
+          source-ref: tflint-1
 
       - name: Show version
         run: tflint --version
