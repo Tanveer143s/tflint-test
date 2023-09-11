@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
 jobs:
   tfsec:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tfsec.yml@master
-    # secrets: inherit
-    secrets: ${{ secrets.GITHUB }}
+    uses: clouddrove/github-shared-workflows/.github/workflows/tfsec.yml@internal_502
+    secrets: inherit
+    # secrets: ${{ secrets.GITHUB }}
     with:
       working_directory: '.'
