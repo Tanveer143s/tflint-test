@@ -1,11 +1,12 @@
-name: tf-lint 
+name: tfsec
+permissions: write-all
 on:
-  # push:
-  #   branches: [ master ]
   pull_request:
   workflow_dispatch:
 jobs:
-  tf-lint:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-lint.yml@tflint-test
-    secrets:
-      GITHUB: ${{ secrets.GITHUB }}
+  tfsec:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tfsec.yml@master
+    # secrets: inherit
+    secrets: ${{ secrets.GITHUB }}
+    with:
+      working_directory: '.'
