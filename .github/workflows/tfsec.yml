@@ -5,8 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   tfsec:
-    # uses: clouddrove/github-shared-workflows/.github/workflows/tfsec.yml@internal_502
-    uses: triat/terraform-security-scan@master
+    uses: clouddrove/github-shared-workflows/.github/workflows/tfsec.yml@internal_502
     # secrets: inherit
     secrets:
       GITHUB: ${{ secrets.GITHUB }}
