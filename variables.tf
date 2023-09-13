@@ -273,7 +273,7 @@ variable "attach_require_latest_tls_policy" {
 variable "block_public_acls" {
   description = "Whether Amazon S3 should block public ACLs for this bucket."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "block_public_policy" {
