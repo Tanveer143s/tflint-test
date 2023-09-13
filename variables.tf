@@ -1,226 +1,366 @@
-#-----------METRIC SERVER----------------------
-variable "metrics_server" {
-  description = "Enable metrics server add-on"
+#Module      : LABEL
+#Description : Terraform label module variables.
+variable "name" {
+  type        = string
+  default     = ""
+  description = "Name  (e.g. `app` or `cluster`)."
+}
+
+variable "repository" {
+  type        = string
+  default     = "https://github.com/clouddrove/terraform-aws-s3"
+  description = "Terraform current module repo"
+}
+
+variable "environment" {
+  type        = string
+  default     = ""
+  description = "Environment (e.g. `prod`, `dev`, `staging`)."
+}
+
+variable "label_order" {
+  type        = list(any)
+  default     = []
+  description = "Label order, e.g. `name`,`application`."
+}
+
+variable "managedby" {
+  type        = string
+  default     = "hello@clouddrove.com"
+  description = "ManagedBy, eg 'CloudDrove'."
+}
+
+# Module      : S3 BUCKET
+# Description : Terraform S3 Bucket module variables.
+variable "enabled" {
+  type        = bool
+  default     = true
+  description = "Conditionally create S3 bucket."
+}
+
+variable "versioning" {
+  type        = bool
+  default     = true
+  description = "Enable Versioning of S3."
+}
+
+variable "acl" {
+  type        = string
+  default     = null
+  description = "Canned ACL to apply to the S3 bucket."
+}
+
+variable "enable_server_side_encryption" {
   type        = bool
   default     = false
+  description = "Enable enable_server_side_encryption"
 }
 
-variable "metrics_server_helm_config" {
-  description = "Metrics Server Helm Chart config"
-  type        = any
-  default     = null
+variable "sse_algorithm" {
+  type        = string
+  default     = "AES256"
+  description = "The server-side encryption algorithm to use. Valid values are AES256 and aws:kms."
 }
 
-#-----------CLUSTER AUTOSCALER------------------
-variable "cluster_autoscaler" {
-  description = "Enable Cluster Autoscaler add-on"
+variable "enable_kms" {
   type        = bool
   default     = false
+  description = "Enable enable_server_side_encryption"
 }
 
-variable "cluster_autoscaler_helm_config" {
-  description = "Cluster Autoscaler Helm Chart config"
-  type        = any
-  default     = null
+variable "kms_master_key_id" {
+  type        = string
+  default     = ""
+  description = "The AWS KMS master key ID used for the SSE-KMS encryption. This can only be used when you set the value of sse_algorithm as aws:kms. The default aws/s3 AWS KMS master key is used if this element is absent while the sse_algorithm is aws:kms."
 }
 
-#-----------AWS LOAD BALANCER CONTROLLER --------
-variable "aws_load_balancer_controller" {
-  description = "Enable AWS Load Balancer Controller add-on"
+variable "enable_lifecycle_configuration_rules" {
   type        = bool
   default     = false
+  description = "enable or disable lifecycle_configuration_rules"
 }
 
-variable "aws_load_balancer_controller_helm_config" {
-  description = "AWS Load Balancer Controller Helm Chart config"
-  type        = any
+variable "lifecycle_configuration_rules" {
+  type = list(object({
+    id      = string
+    prefix  = string
+    enabled = bool
+    tags    = map(string)
+
+    enable_glacier_transition            = bool
+    enable_deeparchive_transition        = bool
+    enable_standard_ia_transition        = bool
+    enable_current_object_expiration     = bool
+    enable_noncurrent_version_expiration = bool
+
+    abort_incomplete_multipart_upload_days         = number
+    noncurrent_version_glacier_transition_days     = number
+    noncurrent_version_deeparchive_transition_days = number
+    noncurrent_version_expiration_days             = number
+
+    standard_transition_days    = number
+    glacier_transition_days     = number
+    deeparchive_transition_days = number
+    expiration_days             = number
+  }))
   default     = null
+  description = "A list of lifecycle rules"
 }
 
-#-----------AWS NODE TERMINATION HANDLER --------
-variable "aws_node_termination_handler" {
-  description = "Enable AWS Node Termination Handler add-on"
+# Module      : S3 BUCKET POLICY
+# Description : Terraform S3 Bucket Policy module variables.
+variable "aws_iam_policy_document" {
+  type        = string
+  default     = ""
+  sensitive   = true
+  description = "The text of the policy. Although this is a bucket policy rather than an IAM policy, the aws_iam_policy_document data source may be used, so long as it specifies a principal. For more information about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide. Note: Bucket policies are limited to 20 KB in size."
+}
+
+variable "bucket_policy" {
   type        = bool
   default     = false
+  description = "Conditionally create S3 bucket policy."
 }
 
-variable "aws_node_termination_handler_helm_config" {
-  description = "AWS Node Termination Handler Helm Chart config"
-  type        = any
-  default     = null
-}
-
-#-----------AWS EFS CSI DRIVER --------------------
-variable "aws_efs_csi_driver" {
-  description = "Enable AWS EFS CSI Driver add-on"
+variable "force_destroy" {
   type        = bool
   default     = false
+  description = "A boolean that indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable."
 }
 
-variable "aws_efs_csi_driver_helm_config" {
-  description = "AWS EFS CSI Driver Helm Chart config"
-  type        = any
+variable "bucket_prefix" {
+  type        = string
   default     = null
+  description = " (Optional, Forces new resource) Creates a unique bucket name beginning with the specified prefix."
 }
 
-#-----------AWS EBS CSI DRIVER --------------------
-variable "aws_ebs_csi_driver" {
-  description = "Enable AWS EBS CSI Driver add-on"
+variable "expected_bucket_owner" {
+  type        = string
+  default     = null
+  description = "The account ID of the expected bucket owner"
+}
+
+variable "owner" {
+  type        = map(string)
+  default     = {}
+  description = "Bucket owner's display name and ID. Conflicts with `acl`"
+}
+
+variable "grants" {
+  type = list(object({
+    id          = string
+    type        = string
+    permissions = list(string)
+    uri         = string
+  }))
+  default     = null
+  description = "ACL Policy grant.conflict with acl.set acl null to use this"
+}
+
+variable "acl_grants" {
+  type = list(object({
+    id         = string
+    type       = string
+    permission = string
+    uri        = string
+  }))
+  default = null
+
+  description = "A list of policy grants for the bucket. Conflicts with `acl`. Set `acl` to `null` to use this."
+}
+
+variable "owner_id" {
+  type        = string
+  default     = ""
+  description = "The canonical user ID associated with the AWS account."
+}
+
+variable "logging" {
   type        = bool
   default     = false
+  description = "Logging Object to enable and disable logging"
 }
 
-variable "aws_ebs_csi_driver_helm_config" {
-  description = "AWS EBS CSI Driver Helm Chart config"
-  type        = any
-  default     = null
+variable "target_bucket" {
+  type        = string
+  default     = ""
+  description = "The bucket where you want Amazon S3 to store server access logs."
 }
 
-#-----------KARPENTER -----------------------------
-variable "karpenter" {
-  description = "Enable KARPENTER add-on"
+variable "target_prefix" {
+  type        = string
+  default     = ""
+  description = "A prefix for all log object keys."
+}
+
+variable "acceleration_status" {
   type        = bool
   default     = false
+  description = "Sets the accelerate configuration of an existing bucket. Can be Enabled or Suspended"
 }
 
-variable "karpenter_helm_config" {
-  description = "Karpenter Helm Chart config"
-  type        = any
+variable "request_payer" {
+  type        = string
   default     = null
+  description = "(Optional) Specifies who should bear the cost of Amazon S3 data transfer. Can be either BucketOwner or Requester. By default, the owner of the S3 bucket would incur the costs of any data transfer. See Requester Pays Buckets developer guide for more information."
 }
 
-#-----------ISTIO INGRESS---------------------------
-variable "istio_ingress" {
-  description = "Enable Istio Ingress add-on"
-  type        = bool
-  default     = false
+variable "website" {
+  type        = any # map(string)
+  default     = {}
+  description = "Map containing static web-site hosting or redirect configuration."
 }
 
-variable "istio_ingress_helm_config" {
-  description = "Istio Ingress  Helm Chart config"
-  type        = any
-  default     = null
-}
-
-variable "istio_manifests" {
+variable "object_lock_configuration" {
   type = object({
-    istio_ingress_manifest_file_path = string
-    istio_gateway_manifest_file_path = string
+    mode  = string #Valid values are GOVERNANCE and COMPLIANCE.
+    days  = number
+    years = number
   })
-  default = {
-    istio_ingress_manifest_file_path = ""
-    istio_gateway_manifest_file_path = ""
-  }
+  default     = null
+  description = "With S3 Object Lock, you can store objects using a write-once-read-many (WORM) model. Object Lock can help prevent objects from being deleted or overwritten for a fixed amount of time or indefinitely."
+
 }
 
-#-----------KAILI DASHBOARD-----------------------
-variable "kiali_server" {
-  description = "Enable kiali server add-on"
+variable "cors_rule" {
+  type = list(object({
+    allowed_headers = list(string)
+    allowed_methods = list(string)
+    allowed_origins = list(string)
+    expose_headers  = list(string)
+    max_age_seconds = number
+  }))
+  default     = null
+  description = "CORS Configuration specification for this bucket"
+}
+
+variable "replication_configuration" {
+  type        = any
+  default     = {}
+  description = "Map containing cross-region replication configuration."
+}
+
+variable "attach_public_policy" {
+  type        = bool
+  default     = true
+  description = "Controls if a user defined public bucket policy will be attached (set to `false` to allow upstream to apply defaults to the bucket)"
+}
+
+variable "attach_elb_log_delivery_policy" {
+  type        = bool
+  default     = false
+  description = "Controls if S3 bucket should have ELB log delivery policy attached"
+}
+
+variable "attach_lb_log_delivery_policy" {
+  description = "Controls if S3 bucket should have ALB/NLB log delivery policy attached"
   type        = bool
   default     = false
 }
 
-variable "kiali_server_helm_config" {
-  description = "Kiali Server Helm Chart config"
-  type        = any
-  default     = null
-}
-
-
-variable "kiali_manifests" {
-  type = object({
-    kiali_virtualservice_file_path = string
-  })
-  default = {
-    kiali_virtualservice_file_path = ""
-  }
-}
-
-#-----------CALICO TOGERA --------------------------
-variable "calico_tigera" {
-  description = "Enable Tigera's Calico add-on"
+variable "attach_deny_insecure_transport_policy" {
+  description = "Controls if S3 bucket should have deny non-SSL transport policy attached"
   type        = bool
   default     = false
 }
 
-variable "calico_tigera_helm_config" {
-  description = "Calico Helm Chart config"
-  type        = any
-  default     = null
-}
-#----------- EXTERNAL SECRETS ---------------------
-variable "external_secrets" {
-  description = "Enable External-Secrets add-on"
+variable "attach_require_latest_tls_policy" {
+  description = "Controls if S3 bucket should require the latest version of TLS"
   type        = bool
   default     = false
 }
 
-variable "external_secrets_helm_config" {
-  description = "External-Secrets Helm Chart config"
+variable "block_public_acls" {
+  description = "Whether Amazon S3 should block public ACLs for this bucket."
+  type        = bool
+  default     = false
+}
+
+variable "block_public_policy" {
+  type        = bool
+  default     = false
+  description = "Whether Amazon S3 should block public bucket policies for this bucket."
+}
+
+variable "ignore_public_acls" {
+  description = "Whether Amazon S3 should ignore public ACLs for this bucket."
+  type        = bool
+  default     = false
+}
+
+variable "restrict_public_buckets" {
+  description = "Whether Amazon S3 should restrict public bucket policies for this bucket."
+  type        = bool
+  default     = false
+
+}
+
+variable "control_object_ownership" {
+  description = "Whether to manage S3 Bucket Ownership Controls on this bucket."
+  type        = bool
+  default     = false
+}
+
+variable "object_ownership" {
+  description = "Object ownership. Valid values: BucketOwnerEnforced, BucketOwnerPreferred or ObjectWriter. 'BucketOwnerEnforced': ACLs are disabled, and the bucket owner automatically owns and has full control over every object in the bucket. 'BucketOwnerPreferred': Objects uploaded to the bucket change ownership to the bucket owner if the objects are uploaded with the bucket-owner-full-control canned ACL. 'ObjectWriter': The uploading account will own the object if the object is uploaded with the bucket-owner-full-control canned ACL."
+  type        = string
+  default     = "ObjectWriter"
+}
+variable "attach_policy" {
+  description = "Controls if S3 bucket should have bucket policy attached (set to `true` to use value of `policy` as bucket policy)"
+  type        = bool
+  default     = false
+}
+
+variable "configuration_status" {
+  type        = string
+  default     = "Enabled"
+  description = "Versioning state of the bucket. Valid values: Enabled, Suspended, or Disabled. Disabled should only be used when creating or importing resources that correspond to unversioned S3 buckets."
+}
+
+variable "versioning_status" {
+  type        = string
+  default     = "Enabled"
+  description = "Required if versioning_configuration mfa_delete is enabled) Concatenation of the authentication device's serial number, a space, and the value that is displayed on your authentication device."
+}
+
+variable "object_lock_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether S3 bucket should have an Object Lock configuration enabled."
+}
+
+variable "analytics_configuration" {
   type        = any
+  default     = {}
+  description = "Map containing bucket analytics configuration."
+}
+
+variable "vpc_endpoints" {
+  type    = any
+  default = []
+}
+
+variable "timeouts" {
+  description = "Define maximum timeout for creating, updating, and deleting VPC endpoint resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_name" {
+  type        = string
   default     = null
+  description = "name of s3 bucket"
 }
 
-variable "externalsecrets_manifests" {
-  type = object({
-    secret_store_manifest_file_path     = string
-    external_secrets_manifest_file_path = string
-    secret_manager_name                 = string
-  })
-  default = {
-    secret_store_manifest_file_path     = ""
-    external_secrets_manifest_file_path = ""
-    secret_manager_name                 = "addon-external_secrets"
-  }
+variable "only_https_traffic" {
+  type        = bool
+  default     = true
+  description = "This veriables use for only https traffic."
 }
 
-#-----------COMMON VARIABLES -----------------------
-variable "tags" {
-  type    = any
-  default = {}
-}
-
-variable "irsa_iam_role_path" {
-  type    = any
-  default = {}
-}
-
-variable "irsa_iam_permissions_boundary" {
-  type    = any
-  default = {}
-}
-
-variable "manage_via_gitops" {
-  type    = bool
-  default = false
-}
-
-variable "data_plane_wait_arn" {
-  type    = string
-  default = ""
-}
-
-variable "eks_cluster_id" {
-  type    = string
-  default = ""
-}
-
-variable "eks_oidc_provider" {
-  type    = string
-  default = ""
-}
-
-variable "eks_cluster_endpoint" {
-  type    = string
-  default = ""
-}
-
-variable "eks_oidc_issuer_url" {
-  type    = string
-  default = ""
-}
-
-variable "eks_cluster_name" {
-  type    = string
-  default = ""
+variable "mfa_delete" {
+  type        = string
+  default     = "Disabled"
+  description = "Specifies whether MFA delete is enabled in the bucket versioning configuration. Valid values: Enabled or Disabled."
 }
