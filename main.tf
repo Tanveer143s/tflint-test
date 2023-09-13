@@ -4,7 +4,7 @@ module "metrics_server" {
   helm_config       = var.metrics_server_helm_config != null ? var.metrics_server_helm_config : { values = ["${local_file.metrics_server_helm_config[0].content}"] }
   manage_via_gitops = var.manage_via_gitops
   addon_context     = local.addon_context
-}
+} 
 
 module "cluster_autoscaler" {
   count             = var.cluster_autoscaler ? 1 : 0
