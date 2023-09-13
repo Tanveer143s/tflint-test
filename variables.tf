@@ -52,7 +52,7 @@ variable "acl" {
 
 variable "enable_server_side_encryption" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable enable_server_side_encryption"
 }
 
@@ -64,7 +64,7 @@ variable "sse_algorithm" {
 
 variable "enable_kms" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable enable_server_side_encryption"
 }
 
@@ -278,14 +278,14 @@ variable "block_public_acls" {
 
 variable "block_public_policy" {
   type        = bool
-  default     = false
+  default     = true
   description = "Whether Amazon S3 should block public bucket policies for this bucket."
 }
 
 variable "ignore_public_acls" {
   description = "Whether Amazon S3 should ignore public ACLs for this bucket."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "restrict_public_buckets" {
