@@ -291,7 +291,7 @@ variable "ignore_public_acls" {
 variable "restrict_public_buckets" {
   description = "Whether Amazon S3 should restrict public bucket policies for this bucket."
   type        = bool
-  default     = false
+  default     = true
 
 }
 
