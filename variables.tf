@@ -40,9 +40,7 @@ variable "enabled" {
 
 variable "versioning" {
   type        = bool
-  versioning {
-    enabled = true
-  }
+  versioning  = true
   description = "Enable Versioning of S3."
 }
 
@@ -66,7 +64,7 @@ variable "sse_algorithm" {
 
 variable "enable_kms" {
   type        = bool
-  default     = true
+  enable_kms  = true
   description = "Enable enable_server_side_encryption"
 }
 
