@@ -40,7 +40,9 @@ variable "enabled" {
 
 variable "versioning" {
   type        = bool
-  versioning  = true
+  versioning {
+    enabled = true
+  }
   description = "Enable Versioning of S3."
 }
 
