@@ -40,7 +40,7 @@ variable "enabled" {
 
 variable "versioning" {
   type        = bool
-  default     = true
+  versioning  = true
   description = "Enable Versioning of S3."
 }
 
@@ -52,7 +52,7 @@ variable "acl" {
 
 variable "enable_server_side_encryption" {
   type        = bool
-  default     = true
+  encryption  = true
   description = "Enable enable_server_side_encryption"
 }
 
