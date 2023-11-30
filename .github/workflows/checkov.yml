@@ -1,25 +1,18 @@
-name: Checkov 
-on:
+name:  checkov
+on: 
+  # this can be trigger based on both master and main branch.
   push:
-    branches:
-      - tflint-3
+    branches: [ "tflint-3"]
   workflow_dispatch:
 jobs:
-  build:
 
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
-      - name: Test with Checkov
-        id: checkov
-        uses: bridgecrewio/checkov-action@master
-        with:
-          output_format: cli,sarif
-          output_file_path: console,results.sarif
-          directory: ./k8s/
-          framework: terraform 
-          soft_fail: false   # when true then any error step will goes to next & false then step stopped on error
+  scan:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read #
+    uses: clouddrove/github-shared-workflows/.github/workflows/checkov.yml@issue_502
+    with:
+     directory: ./k8s/
+     framework: kubernetes 
+     continue_on_error: true
