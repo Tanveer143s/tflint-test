@@ -18,6 +18,7 @@ Used organization\_id & billing account for creating folder’s & project’s.
 ### **3.1 Folders**
 1. **Folders:** Folders are used to group projects hierarchically within an organization. They help organize and manage access control and policies at scale by creating a hierarchy that reflects the organization's structure. Folders inherit policies set at the organization level, allowing administrators to manage permissions, policies, and resources across multiple projects within a logical grouping.
 
+```
 module "dev" {
 
 `  `source  = "terraform-google-modules/folders/google"
@@ -67,6 +68,8 @@ module "shared" {
 
 }
 
+```
+
 - There will be Three Folders created 
   - development
   - production
@@ -107,6 +110,7 @@ module "shared" {
 |activate\_apis |“true”|
 |enable\_apis|enable\_apis|
 ### **3.3 Api’s List**
+```
 variable "activate\_apis" {
 
 `  `type = list(string)
@@ -136,5 +140,6 @@ variable "activate\_apis" {
 `  `]
 
 }
+```
 ## **4. Reference code link:**
 [Deployed Folder/Projects Terraform code](https://github.com/clouddrove/icardio/blob/master/terraform/landing-zone/projects.tf)
