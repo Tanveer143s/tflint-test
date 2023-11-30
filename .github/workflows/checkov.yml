@@ -1,4 +1,4 @@
-name:  checkov
+name:  checkov 
 on: 
   # this can be trigger based on both master and main branch.
   push:
