@@ -20,6 +20,6 @@ jobs:
         with:
           output_format: cli,sarif
           output_file_path: console,results.sarif
-          directory: ./prod/
+          directory: ./k8s/
           framework: terraform 
           soft_fail: false   # when true then any error step will goes to next & false then step stopped on error
