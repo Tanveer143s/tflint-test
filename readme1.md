@@ -6,17 +6,22 @@ Landing zones are a crucial aspect in GCP, encompassing the creation of IAM role
 
 IAM role groups are created and associated with users within the group, assigning specific permissions to those users. Three groups and their associated permissions are outlined:
 
-### Groups
+## About
+( Landing zone are most important part in GCP, in this we creates IAM,Groups,Binding,Folders,Projects etc)
 
-- `admins`
-- `developer`
-- `read-only`
+- IAM role groups are created and binded with users in group and assign permissions to users
 
-### Permissions Added for Users
+- There will be three groups:
 
-- `owner`
-- `editor`
-- `read-only`
+    - `admins`
+    - `developer`
+    - `read-only`
+
+- Permissions Added for Users
+
+    - `owner`
+    - `editor`
+    - `read-only`
 
 ## Used Services & Resources
 
@@ -181,4 +186,4 @@ module "prod-bind" {
 
 ## Reference Link:
 
-![Deployed IAM Terraform code] (https://github.com/clouddrove/icardio/blob/master/terraform/landing-zone/iam.tf)
+![Deployed IAM Terraform code](https://github.com/clouddrove/icardio/blob/master/terraform/landing-zone/iam.tf)
