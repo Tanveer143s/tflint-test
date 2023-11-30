@@ -1,6 +1,6 @@
-name:  checkov  
+name:  checkov   
 on: 
-  # this can be trigger based on both master and main branch.
+  # this can be trigger based on both master and main branch. 
   push:
     branches: [ "tflint-3"]
   workflow_dispatch:
