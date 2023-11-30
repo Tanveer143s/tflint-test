@@ -1,185 +1,140 @@
+﻿# **icardio | Projects & Folders**
+## **1. About**
+- All the Infrastructure deployed using Terraform.
+- Folders & Projects Deployed using Terraform
 
-# icardio | IAM
+Certainly! In Google Cloud Platform (GCP), folders and projects are organizational constructs that help manage resources effectively:
+## **2. Cloud Provider & Services**
+Icardio has all of its Infrastructure on Google Cloud Provider **(GCP)** in** region **The Dalles (us-west1)**
 
+Following are the GCP resources and services being used in Icardio infra:
+## **3. Used of Services & Resources**
+Used organization\_id & billing account for creating folder’s & project’s.
 
-## About
-( Landing zone are most important part in GCP, in this we creates IAM,Groups,Binding,Folders,Projects etc)
+|**Configurations**|**Values**|
+| :-: | :-: |
+|org\_id|"386725771750"|
+|billing\_account|"01DCE1-86986D-06C4CF"|
+### **3.1 Folders**
+1. **Folders:** Folders are used to group projects hierarchically within an organization. They help organize and manage access control and policies at scale by creating a hierarchy that reflects the organization's structure. Folders inherit policies set at the organization level, allowing administrators to manage permissions, policies, and resources across multiple projects within a logical grouping.
 
-- IAM role groups are created and binded with users in group and assign permissions to users
+module "dev" {
 
-- There will be three groups:
+`  `source  = "terraform-google-modules/folders/google"
 
-    - `admins`
-    - `developer`
-    - `read-only`
+`  `version = "4.0.1"
 
-- Permissions Added for Users
+`  `parent = "organizations/${var.org\_id}"
 
-    - `owner`
-    - `editor`
-    - `read-only`
+`  `names = [
 
-## Used Services & Resources
+`    `"development",
 
-### 2.1 IAM Groups & Added Members in Group
+`  `]
 
-```yaml
-data "google_organization" "org" {
-  organization = "organizations/${var.org_id}"
 }
 
-resource "google_cloud_identity_group" "admins" {
-  display_name         = "admins"
-  initial_group_config = "WITH_INITIAL_OWNER"
 
-  parent = "customers/${data.google_organization.org.directory_customer_id}"
+module "prod" {
 
-  group_key {
-    id = "admins@icardio.ai"
-  }
+`  `source  = "terraform-google-modules/folders/google"
 
-  labels = {
-    "cloudidentity.googleapis.com/groups.discussion_forum" = ""
-  }
+`  `version = "4.0.1"
+
+`  `parent = "organizations/${var.org\_id}"
+
+`  `names = [
+
+`    `"production",
+
+`  `]
+
 }
 
-resource "google_cloud_identity_group" "developer" {
-  display_name         = "developer"
-  initial_group_config = "WITH_INITIAL_OWNER"
+module "shared" {
 
-  parent = "customers/${data.google_organization.org.directory_customer_id}"
+`  `source  = "terraform-google-modules/folders/google"
 
-  group_key {
-    id = "developer@icardio.ai"
-  }
+`  `version = "4.0.1"
 
-  labels = {
-    "cloudidentity.googleapis.com/groups.discussion_forum" = ""
-  }
+`  `parent = "organizations/${var.org\_id}"
+
+`  `names = [
+
+`    `"shared",
+
+`  `]
+
 }
 
-resource "google_cloud_identity_group" "read-only" {
-  display_name         = "read-only"
-  initial_group_config = "WITH_INITIAL_OWNER"
+- There will be Three Folders created 
+  - development
+  - production
+  - shared
+### **3.2 Projects**
+**Projects:** Projects are the foundational unit in GCP. They act as containers for resources like virtual machines, storage, databases, and more. They provide isolation, billing boundaries, and IAM (Identity and Access Management) settings. Each GCP resource belongs to a project, and projects can be used to organize and govern resources based on different teams, departments, or applications.
+### **3.2.1 Project dev:**
 
-  parent = "customers/${data.google_organization.org.directory_customer_id}"
+|**Configurations**|**Values**|
+| :-: | :-: |
+|name|"icardio-dev-project"|
+|org\_id |"386725771750"|
+|folder\_id |module.dev.id|
+|project\_id |"icardio-dev-project"|
+|billing\_account|"01DCE1-86986D-06C4CF"|
+|activate\_apis |“true”|
+|enable\_apis|var.enable\_apis|
+### **3.2.2 Project-prod:**
 
-  group_key {
-    id = "read-only@icardio.ai"
-  }
+|**Configurations**|**Values**|
+| :-: | :-: |
+|name|"icardio-prod-project"|
+|org\_id |"386725771750"|
+|folder\_id |module.prod.id|
+|project\_id |"icardio-prod-project"|
+|billing\_account|"01DCE1-86986D-06C4CF"|
+|activate\_apis |“true”|
+|enable\_apis|enable\_apis|
+### **3.2.3 Project-shared:**
 
-  labels = {
-    "cloudidentity.googleapis.com/groups.discussion_forum" = ""
-  }
+|**Configurations**|**Values**|
+| :-: | :-: |
+|name|"icardio-shared-project"|
+|org\_id |"386725771750"|
+|folder\_id |module.shared.id|
+|project\_id |"icardio-shared-project"|
+|billing\_account|"01DCE1-86986D-06C4CF"|
+|activate\_apis |“true”|
+|enable\_apis|enable\_apis|
+### **3.3 Api’s List**
+variable "activate\_apis" {
+
+`  `type = list(string)
+
+`  `default = [
+
+`    `"compute.googleapis.com",
+
+`    `"iam.googleapis.com",
+
+`    `"container.googleapis.com",
+
+`    `"dns.googleapis.com",
+
+`    `"servicenetworking.googleapis.com",
+
+`    `"iamcredentials.googleapis.com",
+
+`    `"logging.googleapis.com",
+
+`    `"monitoring.googleapis.com",
+
+`    `"networkconnectivity.googleapis.com",
+
+`    `"gkeconnect.googleapis.com"
+
+`  `]
+
 }
-
-resource "google_cloud_identity_group_membership" "admins_add_member" {
-  group = google_cloud_identity_group.admins.id
-
-  preferred_member_key {
-    id = "anmol@icardio.ai"
-  }
-  roles {
-    name = "MEMBER"
-  }
-  roles {
-    name = "OWNER"
-  }
-}
-
-resource "google_cloud_identity_group_membership" "developer_add_member" {
-  group = google_cloud_identity_group.developer.id
-
-  preferred_member_key {
-    id = "anmol@icardio.ai"
-  }
-  roles {
-    name = "MEMBER"
-  }
-  roles {
-    name = "OWNER"
-  }
-}
-
-resource "google_cloud_identity_group_membership" "readonly_add_member" {
-  group = google_cloud_identity_group.read-only.id
-
-  preferred_member_key {
-    id = "anmol@icardio.ai"
-  }
-  roles {
-    name = "MEMBER"
-  }
-  roles {
-    name = "OWNER"
-  }
-}
-```
-### Project bind with IAM groups:
-
-```
-module "shared-bind" {
-  source  = "terraform-google-modules/iam/google//modules/projects_iam"
-  version = "~> 7.4"
-
-  projects = [
-    module.project-shared.project_id,
-  ]
-  bindings = {
-    "roles/owner" = [
-      "group:admins@icardio.ai",
-    ],
-    "roles/editor" = [
-      "group:developer@icardio.ai",
-    ]
-    "roles/viewer" = [
-      "group:read-only@icardio.ai",
-    ]
-  }
-}
-
-module "dev-bind" {
-  source  = "terraform-google-modules/iam/google//modules/projects_iam"
-  version = "~> 7.4"
-
-  projects = [
-    module.project-dev.project_id,
-  ]
-  bindings = {
-    "roles/owner" = [
-      "group:admins@icardio.ai",
-    ],
-    "roles/editor" = [
-      "group:developer@icardio.ai",
-    ]
-    "roles/viewer" = [
-      "group:read-only@icardio.ai",
-    ]
-  }
-}
-
-module "prod-bind" {
-  source  = "terraform-google-modules/iam/google//modules/projects_iam"
-  version = "~> 7.4"
-
-  projects = [
-    module.project-prod.project_id,
-  ]
-  bindings = {
-    "roles/owner" = [
-      "group:admins@icardio.ai",
-    ],
-    "roles/editor" = [
-      "group:developer@icardio.ai",
-    ]
-    "roles/viewer" = [
-      "group:read-only@icardio.ai",
-    ]
-  }
-}
-
-```
-
-## Reference Link:
-
-[Deployed IAM Terraform code](https://github.com/clouddrove/icardio/blob/master/terraform/landing-zone/iam.tf)
+## **4. Reference code link:**
+[Deployed Folder/Projects Terraform code](https://github.com/clouddrove/icardio/blob/master/terraform/landing-zone/projects.tf)
