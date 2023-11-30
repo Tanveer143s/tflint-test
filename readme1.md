@@ -1,10 +1,6 @@
-# Landing Zone in Google Cloud Platform (GCP)
 
-Landing zones are a crucial aspect in GCP, encompassing the creation of IAM roles, groups, bindings, folders, projects, etc.
+# icardio | IAM
 
-## IAM Role Groups and User Permissions
-
-IAM role groups are created and associated with users within the group, assigning specific permissions to those users. Three groups and their associated permissions are outlined:
 
 ## About
 ( Landing zone are most important part in GCP, in this we creates IAM,Groups,Binding,Folders,Projects etc)
