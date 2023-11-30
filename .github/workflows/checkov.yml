@@ -16,7 +16,7 @@ jobs:
      directory: ./k8s/
      framework: kubernetes 
      continue_on_error: true
-     output_format: json
+     output_format: json 
      output_file_path: k8s/sarif.json
 
   
