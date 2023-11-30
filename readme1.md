@@ -182,4 +182,4 @@ module "prod-bind" {
 
 ## Reference Link:
 
-![Deployed IAM Terraform code](https://github.com/clouddrove/icardio/blob/master/terraform/landing-zone/iam.tf)
+[Deployed IAM Terraform code](https://github.com/clouddrove/icardio/blob/master/terraform/landing-zone/iam.tf)
