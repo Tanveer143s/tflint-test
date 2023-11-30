@@ -21,50 +21,50 @@ Used organization\_id & billing account for creating folder’s & project’s.
 ```
 module "dev" {
 
-  `source  = "terraform-google-modules/folders/google"
+   source  = "terraform-google-modules/folders/google"
 
-  `version = "4.0.1"
+   version = "4.0.1"
 
-  `parent = "organizations/${var.org\_id}"
+   parent = "organizations/${var.org\_id}"
 
-  `names = [
+   names = [
 
-    `"development",
+     "development"
 
-  `]
+   ]
 
 }
 
 
 module "prod" {
 
-  `source  = "terraform-google-modules/folders/google"
+   source  = "terraform-google-modules/folders/google"
 
-  `version = "4.0.1"
+   version = "4.0.1"
 
-  `parent = "organizations/${var.org\_id}"
+   parent = "organizations/${var.org\_id}"
 
-  `names = [
+   names = [
 
-    `"production",
+     "production"
 
-  `]
+  ]
 
 }
 
 module "shared" {
 
-  `source  = "terraform-google-modules/folders/google"
+   source  = "terraform-google-modules/folders/google"
 
-  `version = "4.0.1"
+   version = "4.0.1"
 
-  `parent = "organizations/${var.org\_id}"
+   parent = "organizations/${var.org\_id}"
 
-  `names = [
+   names = [
 
-    `"shared",
+     "shared"
 
-  `]
+   ]
 
 }
 
@@ -113,31 +113,31 @@ module "shared" {
 ```
 variable "activate\_apis" {
 
-  `type = list(string)
+  type = list(string)
 
-  `default = [
+  default = [
 
-    `"compute.googleapis.com",
+    "compute.googleapis.com"
 
-    `"iam.googleapis.com",
+    "iam.googleapis.com"
 
-    `"container.googleapis.com",
+    "container.googleapis.com"
 
-    `"dns.googleapis.com",
+    "dns.googleapis.com"
 
-    `"servicenetworking.googleapis.com",
+    "servicenetworking.googleapis.com"
 
-    `"iamcredentials.googleapis.com",
+    "iamcredentials.googleapis.com"
 
-    `"logging.googleapis.com",
+    "logging.googleapis.com"
 
-    `"monitoring.googleapis.com",
+    "monitoring.googleapis.com"
 
-    `"networkconnectivity.googleapis.com",
+    "networkconnectivity.googleapis.com"
 
-    `"gkeconnect.googleapis.com"
+    "gkeconnect.googleapis.com"
 
-  `]
+  ]
 
 }
 ```
