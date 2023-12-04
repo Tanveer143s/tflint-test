@@ -13,7 +13,7 @@ jobs:
       actions: read #
     uses: clouddrove/github-shared-workflows/.github/workflows/checkov.yml@issue_502
     with:
-     directory: ./prod/
+     directory: ./ebs/
      framework: Terraform 
      continue_on_error: true
 
