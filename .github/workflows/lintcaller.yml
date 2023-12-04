@@ -1,5 +1,5 @@
 # Tf lint work flow checks for possible errors, best practices in your terraform code.
-name: tf-lint
+name: tf-lint 
 on:
   workflow_call:
     secrets:

@@ -2,7 +2,7 @@ name: tf-lint
 on:
   # push:
   #   branches: [ master ]
-  pull_request:
+  # pull_request:
   workflow_dispatch:
 jobs:
   tf-lint:

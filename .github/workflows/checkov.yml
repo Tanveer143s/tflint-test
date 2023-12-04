@@ -1,0 +1,21 @@
+name:  checkov     
+on: 
+  # this can be trigger based on both master and main branch. 
+  push:
+    branches: [ "tflint-3"]
+  workflow_dispatch:
+jobs:
+
+  scan:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read #
+    uses: clouddrove/github-shared-workflows/.github/workflows/checkov.yml@issue_502
+    with:
+     directory: ./efs/
+     framework: Terraform 
+     continue_on_error: true
+
+
+  
