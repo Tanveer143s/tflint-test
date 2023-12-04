@@ -13,8 +13,8 @@ jobs:
       actions: read #
     uses: clouddrove/github-shared-workflows/.github/workflows/checkov.yml@issue_502
     with:
-     directory: ./k8s/
-     framework: kubernetes 
+     directory: ./prod/
+     framework: Terraform 
      continue_on_error: true
 
 
